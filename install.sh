@@ -4,16 +4,12 @@ OSM_MIRROR_CONF=/etc/default/openstreetmap-conf
 
 
 function echo_step () {
-    set +x
     echo -e "\e[92m\e[1m$1\e[0m"
-    set -x
 }
 
 
 function echo_error () {
-    set +x
     echo -e "\e[91m\e[1m$1\e[0m"
-    set -x
 }
 
 

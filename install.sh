@@ -30,7 +30,7 @@ apt-get dist-upgrade -y
 
 echo_step "Install necessary components..."
 
-apt-get install -y libgdal1 gdal-bin
+apt-get install -y git wget libgdal1 gdal-bin
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get install -y libapache2-mod-tile
@@ -50,7 +50,7 @@ fi
 
 echo_step "Configure instance..."
 
-if [[ -z "$EXTENT" ]]
+if [[ -z "$EXTENT" ]]; then
     read -e -p "Enter extent (xmin,ymin,xmax,ymax):  " -i "2.04,43.88,2.22,43.98" EXTENT
 fi
 
@@ -82,7 +82,11 @@ _EOF_
 
 echo_step "Load OpenStreetMap data..."
 
-# TODO : setup cron
+./update.sh
+
+croncmd="`pwd`/update.sh 2> /var/log/openstreetmap-errors"
+cronjob="0 2 1 * * $croncmd"
+( crontab -u root -l 2> /dev/null | grep -v "$croncmd" ; echo "$cronjob" ) | crontab -u root -
 
 
 

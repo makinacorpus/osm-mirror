@@ -1,0 +1,6 @@
+[submodule "preview/vendor/Leaflet.layerscontrol-minimap"]
+	path = preview/vendor/Leaflet.layerscontrol-minimap
+	url = https://github.com/jieter/Leaflet.layerscontrol-minimap.git
+[submodule "preview/vendor/Leaflet.Sync"]
+	path = preview/vendor/Leaflet.Sync
+	url = https://github.com/turban/Leaflet.Sync.git

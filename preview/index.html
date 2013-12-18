@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OpenStreetMap Mirror</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+    <link rel="stylesheet" href="vendor/Leaflet.layerscontrol-minimap/control.layers.minimap.css" />
+    <style type='text/css'>
+        #map {
+            position: absolute;
+            top:0;
+            left: 0;
+            right: 0;
+            bottom:0;
+        }
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <a class="logo" href="http://makina-corpus.com"><img width="100" src="http://depot.makina-corpus.org/public/logo.gif"/></a>
+
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+    <script src="vendor/Leaflet.Sync/L.Map.Sync.js"></script>
+    <script src="vendor/Leaflet.layerscontrol-minimap/L.Control.Layers.Minimap.js"></script>
+
+    <script>
+        var map = L.map('map').fitWorld();
+
+        var options = {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        };
+
+        var baselayers = {
+            'OSM': L.tileLayer('/osm/{z}/{x}/{y}.png', options),
+            'Grayscale': L.tileLayer('/grayscale/{z}/{x}/{y}.png', options),
+            'Bright': L.tileLayer('/bright/{z}/{x}/{y}.png', options),
+        };
+        baselayers['OSM'].addTo(map);
+
+        L.control.layers.minimap(baselayers, [], {
+            position: 'bottomright',
+            collapsed: false
+        }).addTo(map);
+    </script>
+</body>
+</html>

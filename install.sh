@@ -18,7 +18,6 @@ function echo_error () {
 
 
 
-
 echo_step "Upgrade operating system..."
 
 apt-get update > /dev/null
@@ -39,6 +38,16 @@ apt-get install -y libgdal1 gdal-bin
 export DEBIAN_FRONTEND=noninteractive
 apt-get install -y libapache2-mod-tile
 
+
+
+
+if [ ! -f README.md ]; then
+   echo_step "Downloading resources..."
+   git clone --depth=50 --branch=master https://github.com/makinacorpus/osm-mirror.git /tmp/osm-mirror
+   rm -f /tmp/osm-mirror/install.sh
+   shopt -s dotglob nullglob
+   mv /tmp/osm-mirror/* .
+fi
 
 
 

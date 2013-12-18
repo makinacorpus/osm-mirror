@@ -30,7 +30,7 @@ apt-get dist-upgrade -y
 
 echo_step "Install necessary components..."
 
-apt-get install -y git wget libgdal1 gdal-bin
+apt-get install -y git wget libgdal1 gdal-bin mapnik-utils unzip
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get install -y libapache2-mod-tile
@@ -80,6 +80,34 @@ local    ${DB_NAME}     ${DB_USER}                 trust
 _EOF_
 
 
+
+
+echo_step "Load OpenStreetMap data..."
+
+OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries/
+
+# Copy ne_10m_populated_places to ne_10m_populated_places_fixed
+rm -rf $OSM_DATA/ne_10m_populated_places_fixed.*
+ogr2ogr $OSM_DATA/ne_10m_populated_places_fixed.shp $OSM_DATA/ne_10m_populated_places.shp
+
+zipfile=/tmp/simplified-land-polygons-complete-3857.zip
+curl -L -o "$zipfile" "http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip"
+unzip -qqu $zipfile simplified-land-polygons-complete-3857/simplified_land_polygons.{shp,shx,prj,dbf,cpg} -d /tmp
+mv /tmp/simplified-land-polygons-complete-3857/simplified_land_polygons.* $OSM_DATA/
+
+zipfile=/tmp/land-polygons-split-3857.zip
+curl -L -o "$zipfile" "http://data.openstreetmapdata.com/land-polygons-split-3857.zip"
+unzip -qqu $zipfile -d /tmp
+mv /tmp/land-polygons-split-3857/land_polygons.* $OSM_DATA/
+
+shapeindex --shape_files \
+$OSM_DATA/simplified_land_polygons.shp \
+$OSM_DATA/land_polygons.shp \
+$OSM_DATA/ne_10m_populated_places_fixed.shp
+
+
+
+
 echo_step "Load OpenStreetMap data..."
 
 ./update.sh
@@ -87,6 +115,7 @@ echo_step "Load OpenStreetMap data..."
 croncmd="`pwd`/update.sh 2> /var/log/openstreetmap-errors"
 cronjob="0 2 1 * * $croncmd"
 ( crontab -u root -l 2> /dev/null | grep -v "$croncmd" ; echo "$cronjob" ) | crontab -u root -
+
 
 
 

@@ -20,6 +20,7 @@ apt-get update > /dev/null
 apt-get install -y python-software-properties
 apt-add-repository -y ppa:git-core/ppa
 apt-add-repository -y ppa:ubuntugis/ppa
+add-apt-repository -y ppa:kakrueger/openstreetmap
 apt-get update > /dev/null
 
 apt-get dist-upgrade -y

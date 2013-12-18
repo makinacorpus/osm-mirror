@@ -12,7 +12,7 @@ function echo_error () {
     echo -e "\e[91m\e[1m$1\e[0m"
 }
 
-
+#.......................................................................
 
 echo_step "Upgrade operating system..."
 
@@ -26,7 +26,7 @@ apt-get update > /dev/null
 apt-get dist-upgrade -y
 
 
-
+#.......................................................................
 
 echo_step "Install necessary components..."
 
@@ -36,7 +36,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get install -y libapache2-mod-tile
 
 
-
+#.......................................................................
 
 if [ ! -f README.md ]; then
    echo_step "Downloading resources..."
@@ -47,6 +47,7 @@ if [ ! -f README.md ]; then
 fi
 
 
+#.......................................................................
 
 echo_step "Configure instance..."
 
@@ -64,7 +65,7 @@ _EOF_
 source $OSM_MIRROR_CONF
 
 
-
+#.......................................................................
 
 echo_step "Configure database..."
 
@@ -80,9 +81,9 @@ local    ${DB_NAME}     ${DB_USER}                 trust
 _EOF_
 
 
+#.......................................................................
 
-
-echo_step "Load OpenStreetMap data..."
+echo_step "Load world boundaries data..."
 
 OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries/
 
@@ -100,13 +101,31 @@ curl -L -o "$zipfile" "http://data.openstreetmapdata.com/land-polygons-split-385
 unzip -qqu $zipfile -d /tmp
 mv /tmp/land-polygons-split-3857/land_polygons.* $OSM_DATA/
 
+zipfile=/tmp/coastline-good.zip
+curl -L -o "$zipfile" "http://tilemill-data.s3.amazonaws.com/osm/coastline-good.zip"
+unzip -qqu $zipfile -d /tmp
+mv /tmp/coastline-good.* $OSM_DATA/
+
+zipfile=/tmp/shoreline_300.zip
+curl -L -o "$zipfile" "http://tilemill-data.s3.amazonaws.com/osm/shoreline_300.zip"
+unzip -qqu $zipfile -d /tmp
+mv /tmp/shoreline_300.* $OSM_DATA/
+
+zipfile=/tmp/10m-land.zip
+curl -L -o "$zipfile" "http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-land.zip"
+unzip -qqu $zipfile -d /tmp
+mv /tmp/10m-land.* $OSM_DATA/
+
 shapeindex --shape_files \
 $OSM_DATA/simplified_land_polygons.shp \
 $OSM_DATA/land_polygons.shp \
+$OSM_DATA/coastline-good.shp \
+$OSM_DATA/10m-land.shp \
+$OSM_DATA/shoreline_300.shp \
 $OSM_DATA/ne_10m_populated_places_fixed.shp
 
 
-
+#.......................................................................
 
 echo_step "Load OpenStreetMap data..."
 
@@ -117,7 +136,7 @@ cronjob="0 2 1 * * $croncmd"
 ( crontab -u root -l 2> /dev/null | grep -v "$croncmd" ; echo "$cronjob" ) | crontab -u root -
 
 
-
+#.......................................................................
 
 echo_step "Configure map styles..."
 
@@ -154,6 +173,7 @@ DESCRIPTION=Bright
 _EOF_
 
 
+#.......................................................................
 
 echo_step "Deploy preview map..."
 

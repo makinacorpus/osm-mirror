@@ -2,16 +2,6 @@
 <!DOCTYPE Map[]>
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over" font-directory="./fonts" background-color="#c4dff6" maximum-extent="-20037508.34,-20037508.34,20037508.34,20037508.34">
 
-<Parameters>
-  <Parameter name="bounds">2.04,43.88,2.22,43.98</Parameter>
-  <Parameter name="center">2.1482,43.9287,14</Parameter>
-  <Parameter name="format">png</Parameter>
-  <Parameter name="minzoom">12</Parameter>
-  <Parameter name="maxzoom">19</Parameter>
-  <Parameter name="attribution"><![CDATA[Data © OpenStreetMap (and) contributors, CC-BY-SA]]></Parameter>
-  <Parameter name="name"><![CDATA[OSM Bright]]></Parameter>
-</Parameters>
-
 <FontSet name="fontset-0">
   <Font face-name="Open Sans Semibold"/>
   <Font face-name="DejaVu Sans Book"/>
@@ -50,7 +40,7 @@
     <Datasource>
        <Parameter name="dbname"><![CDATA[osm]]></Parameter>
        <Parameter name="extent"><![CDATA[-20037508.34 -20037508.34 20037508.34 20037508.34]]></Parameter>
-       <Parameter name="file"><![CDATA[/home/makina/Documents/MapBox/project/OSMBright/layers/land/10m-land.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/usr/share/mapnik-osm-data/world_boundaries/10m-land.shp]]></Parameter>
        <Parameter name="id"><![CDATA[land]]></Parameter>
        <Parameter name="project"><![CDATA[foss4g-2011]]></Parameter>
        <Parameter name="srs"><![CDATA[+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over]]></Parameter>
@@ -68,7 +58,7 @@
   srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
     <StyleName>processed_p</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/home/makina/Documents/MapBox/project/OSMBright/layers/processed_p/coastline-good.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/usr/share/mapnik-osm-data/world_boundaries/coastline-good.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>
@@ -84,7 +74,7 @@
   srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
     <StyleName>shoreline_300</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/home/makina/Documents/MapBox/project/OSMBright/layers/shoreline_300/shoreline_300.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/usr/share/mapnik-osm-data/world_boundaries/shoreline_300.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>

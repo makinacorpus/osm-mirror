@@ -2,16 +2,6 @@
 <!DOCTYPE Map[]>
 <Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over" background-color="#b5d0d0" maximum-extent="-20037508.34,-20037508.34,20037508.34,20037508.34">
 
-<Parameters>
-  <Parameter name="bounds">2.04,43.88,2.22,43.98</Parameter>
-  <Parameter name="center">2.1494,43.9278,13</Parameter>
-  <Parameter name="format">png</Parameter>
-  <Parameter name="minzoom">12</Parameter>
-  <Parameter name="maxzoom">19</Parameter>
-  <Parameter name="name"><![CDATA[OpenStreetMap Carto]]></Parameter>
-  <Parameter name="description"><![CDATA[A faithful reimplementation of the standard OpenStreetMap style]]></Parameter>
-</Parameters>
-
 <FontSet name="fontset-0">
   <Font face-name="DejaVu Sans Book"/>
   <Font face-name="unifont Medium"/>
@@ -34,7 +24,7 @@
   srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
     <StyleName>world</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/home/makina/Documents/MapBox/project/openstreetmap-carto/data/simplified-land-polygons-complete-3857/simplified_land_polygons.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/usr/share/mapnik-osm-data/world_boundaries/simplified_land_polygons.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>
@@ -49,7 +39,7 @@
   srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
     <StyleName>coast-poly</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/home/makina/Documents/MapBox/project/openstreetmap-carto/data/land-polygons-split-3857/land_polygons.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/usr/share/mapnik-osm-data/world_boundaries/land_polygons.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>
@@ -65,7 +55,7 @@
   srs="+proj=merc +datum=WGS84 +over">
     <StyleName>builtup</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/home/makina/Documents/MapBox/project/openstreetmap-carto/data/world_boundaries/builtup_area.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/usr/share/mapnik-osm-data/world_boundaries/builtup_area.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>
@@ -81,7 +71,7 @@
   srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
     <StyleName>necountries</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/home/makina/Documents/MapBox/project/openstreetmap-carto/data/ne_110m_admin_0_boundary_lines_land/ne_110m_admin_0_boundary_lines_land.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/usr/share/mapnik-osm-data/world_boundaries/ne_110m_admin_0_boundary_lines_land.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>
@@ -11423,7 +11413,7 @@ case when leisure='pitch' then 2
   srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
     <StyleName>nepopulated</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/home/makina/Documents/MapBox/project/openstreetmap-carto/data/ne_10m_populated_places/ne_10m_populated_places_fixed.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/usr/share/mapnik-osm-data/world_boundaries/ne_10m_populated_places_fixed.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
        <Parameter name="encoding"><![CDATA[windows-1252]]></Parameter>
     </Datasource>

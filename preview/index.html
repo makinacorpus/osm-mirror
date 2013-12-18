@@ -27,22 +27,26 @@
     <div id="map"></div>
     <a class="logo" href="http://makina-corpus.com"><img width="100" src="http://depot.makina-corpus.org/public/logo.gif"/></a>
 
+    <script src="conf.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
     <script src="vendor/Leaflet.Sync/L.Map.Sync.js"></script>
     <script src="vendor/Leaflet.layerscontrol-minimap/L.Control.Layers.Minimap.js"></script>
 
     <script>
-        var map = L.map('map').fitWorld();
+        var bounds = L.latLngBounds([SETTINGS.extent[1], SETTINGS.extent[0]],
+                                    [SETTINGS.extent[3], SETTINGS.extent[2]]);
+
+        var map = L.map('map', {maxBounds: bounds})
+                   .fitBounds(bounds);
 
         var options = {
             attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
         };
 
-        var baselayers = {
-            'OSM': L.tileLayer('/osm/{z}/{x}/{y}.png', options),
-            'Grayscale': L.tileLayer('/grayscale/{z}/{x}/{y}.png', options),
-            'Bright': L.tileLayer('/bright/{z}/{x}/{y}.png', options),
-        };
+        var baselayers = {};
+        for (var k in SETTINGS.layers) {
+            baselayers[k] = L.tileLayer(SETTINGS.layers[k], options)
+        }
         baselayers['OSM'].addTo(map);
 
         L.control.layers.minimap(baselayers, [], {

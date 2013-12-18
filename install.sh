@@ -39,7 +39,7 @@ apt-get install -y libapache2-mod-tile
 #.......................................................................
 
 if [ ! -f README.md ]; then
-   echo_step "Downloading resources..."
+   echo_step "Downloading installer source..."
    git clone --depth=50 --branch=master https://github.com/makinacorpus/osm-mirror.git /tmp/osm-mirror
    rm -f /tmp/osm-mirror/install.sh
    shopt -s dotglob nullglob
@@ -178,6 +178,18 @@ _EOF_
 echo_step "Deploy preview map..."
 
 cp -R preview/* /var/www/osm
+
+
+cat << _EOF_ > /var/www/osm/conf.js
+var SETTINGS = {
+    extent: [${EXTENT}],
+    layers: {
+        'OSM': '/osm/{z}/{x}/{y}.png',
+        'Grayscale': '/grayscale/{z}/{x}/{y}.png',
+        'Bright': '/bright/{z}/{x}/{y}.png'
+    }
+};
+_EOF_
 
 
 

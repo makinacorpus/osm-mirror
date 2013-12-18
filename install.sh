@@ -53,7 +53,9 @@ fi
 
 echo_step "Configure instance..."
 
-read -e -p "Enter extent (xmin,ymin,xmax,ymax):  " -i "2.04,43.88,2.22,43.98" EXTENT
+if [[ -z "$EXTENT" ]]
+    read -e -p "Enter extent (xmin,ymin,xmax,ymax):  " -i "2.04,43.88,2.22,43.98" EXTENT
+fi
 
 cat << _EOF_ > $OSM_MIRROR_CONF
 DB_NAME="gis"

@@ -1,2 +1,2 @@
 language: python
-install: sudo ./install.sh
+install: sudo EXTENT="2.04,43.88,2.22,43.98" ./install.sh

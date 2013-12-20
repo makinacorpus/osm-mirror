@@ -33,14 +33,47 @@ Just run the following commands :
     chmod +x install.sh
     sudo ./install.sh
 
-A lot of data will be downloaded (Approx. 1Go).
+**That's it !** Access your server URL.
 
 You will be prompted for an extent (xmin,ymin,xmax,ymax). The default one is the city of Albi.
 Use the [OpenStreetMap extent tool](http://www.openstreetmap.org/export#map=17/43.92751/2.14760) for help.
 
+A lot of data will be downloaded (Approx. 1Go).
+
 A planned task will be setup to **overwrite** the whole database with up-to-date
 OpenStreetMap data, every month (*root crontab*).
 
+
+Use the tiles in Leaflet
+------------------------
+
+    var map = L.map('map').setView([43.92751, 2.14760], 14);
+
+    L.tileLayer('http://SERVER/STYLE/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+
+Use the tiles in OpenLayers 3
+-----------------------------
+
+    var map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                attributions: [new ol.Attribution({
+                  html: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                })],
+                source: new new ol.source.XYZ({
+                    url: 'http://SERVER/STYLE/{z}/{y}/{x}.png'
+                })
+            })
+        ],
+        view: new ol.View2D({
+          center: ol.proj.transform([43.92751, 2.14760], 'EPSG:4326', 'EPSG:3857'),
+          zoom: 14
+        })
+    });
 
 
 Change extent

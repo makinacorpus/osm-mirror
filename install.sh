@@ -167,8 +167,8 @@ cronjob="0 2 1 * * $croncmd"
 ./update-data.sh
 
 # Grant rights on OSM tables
-/usr/bin/install-postgis-osm-user.sh ${DB_NAME} www-data
-/usr/bin/install-postgis-osm-user.sh ${DB_NAME} gisuser
+/usr/bin/install-postgis-osm-user.sh ${DB_NAME} www-data 2> /dev/null
+/usr/bin/install-postgis-osm-user.sh ${DB_NAME} gisuser 2> /dev/null
 
 #.......................................................................
 

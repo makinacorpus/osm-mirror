@@ -9,6 +9,7 @@ Main Purpose
 
 * Provide an easy way to setup the full stack ;
 * Targetted for small areas (e.g. cities) ;
+* Automatic updates on specified extent ;
 * One configuration file to handle ;
 * Small preview page app using Leaflet.
 
@@ -58,8 +59,26 @@ Refresh the data on the new extent :
     sudo ./update-data.sh
 
 
-Add new style
--------------
+
+Generate GeoTiff rasters
+------------------------
+
+**TODO**
+
+Generate a raster file on the extent at the specified scale :
+
+    # ./render-raster.sh --extent xmin,xmax,ymin,ymax --scale 20000
+
+
+Add new style from TileMill
+---------------------------
+
+Create a style with Tilemill, export it as Mapnik XML ( *osm2pgsql flavor* ).
+
+Post-process the XML file :
+
+* remove the ``<Parameters>`` bloc ( *Mapnik 2.0 compatibility* )
+* fix the Shapefile paths to ``/usr/share/mapnik-osm-data/world_boundaries/``
 
 Copy the whole folder into ``styles/``. Name the ``.xml`` file with the same
 name as the folder.
@@ -67,6 +86,13 @@ name as the folder.
 Update the configuration :
 
     sudo ./update-conf.sh
+
+
+Known limitations
+-----------------
+
+* All stylesheets and scripts use *localhost* for database
+
 
 
 Credits

@@ -64,7 +64,7 @@ Use the tiles in OpenLayers 3
                 attributions: [new ol.Attribution({
                   html: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 })],
-                source: new new ol.source.XYZ({
+                source: new ol.source.XYZ({
                     url: 'http://SERVER/STYLE/{z}/{y}/{x}.png'
                 })
             })

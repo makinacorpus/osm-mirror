@@ -24,6 +24,24 @@ fi
 
 #.......................................................................
 
+echo_step "Configure instance..."
+
+if [[ -z "$EXTENT" ]]; then
+    read -e -p "Enter extent (xmin,ymin,xmax,ymax):  " -i "2.04,43.88,2.22,43.98" EXTENT
+fi
+
+cat << _EOF_ > $OSM_MIRROR_CONF
+DB_NAME="gis"
+DB_USER="gisuser"
+DB_PASSWORD="corpus"
+EXTENT="${EXTENT}"
+_EOF_
+
+source $OSM_MIRROR_CONF
+
+
+#.......................................................................
+
 echo_step "Upgrade operating system..."
 
 apt-get update > /dev/null
@@ -59,24 +77,6 @@ if [ ! -f README.md ]; then
    shopt -s dotglob nullglob
    cp -R /tmp/osm-mirror/* .
 fi
-
-
-#.......................................................................
-
-echo_step "Configure instance..."
-
-if [[ -z "$EXTENT" ]]; then
-    read -e -p "Enter extent (xmin,ymin,xmax,ymax):  " -i "2.04,43.88,2.22,43.98" EXTENT
-fi
-
-cat << _EOF_ > $OSM_MIRROR_CONF
-DB_NAME="gis"
-DB_USER="gisuser"
-DB_PASSWORD="corpus"
-EXTENT="${EXTENT}"
-_EOF_
-
-source $OSM_MIRROR_CONF
 
 
 #.......................................................................
@@ -155,7 +155,7 @@ cp -R preview/* /var/www/
 
 #.......................................................................
 
-echo_step "Setup monthly update..."
+echo_step "Setup monthly update in root crontab..."
 
 croncmd="`pwd`/update-data.sh 2> /var/log/openstreetmap-errors"
 cronjob="0 2 1 * * $croncmd"

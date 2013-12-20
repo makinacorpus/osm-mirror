@@ -38,7 +38,7 @@ You will be prompted for an extent (xmin,ymin,xmax,ymax). The default one is the
 Use the [OpenStreetMap extent tool](http://www.openstreetmap.org/export#map=17/43.92751/2.14760) for help.
 
 A planned task will be setup to **overwrite** the whole database with up-to-date
-OpenStreetMap data, every month.
+OpenStreetMap data, every month (*root crontab*).
 
 
 

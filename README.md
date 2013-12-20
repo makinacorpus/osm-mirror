@@ -34,11 +34,39 @@ Just run the following commands :
 
 A lot of data will be downloaded (Approx. 1Go).
 
-You will be prompted for an extent, the default one is the city of Albi.
+You will be prompted for an extent (xmin,ymin,xmax,ymax). The default one is the city of Albi.
 Use the [OpenStreetMap extent tool](http://www.openstreetmap.org/export#map=17/43.92751/2.14760) for help.
 
 A planned task will be setup to **overwrite** the whole database with up-to-date
-OpenStreetMap data.
+OpenStreetMap data, every month.
+
+
+
+Change extent
+-------------
+
+Edit the ``EXTENT`` value in ``/etc/default/openstreetmap-conf``.
+
+
+Update the configuration :
+
+    sudo ./update-conf.sh
+
+
+Refresh the data on the new extent :
+
+    sudo ./update-data.sh
+
+
+Add new style
+-------------
+
+Copy the whole folder into ``styles/``. Name the ``.xml`` file with the same
+name as the folder.
+
+Update the configuration :
+
+    sudo ./update-conf.sh
 
 
 Credits

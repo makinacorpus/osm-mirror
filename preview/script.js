@@ -11,7 +11,7 @@ var baselayers = {};
 for (var k in SETTINGS.layers) {
     baselayers[k] = L.tileLayer(SETTINGS.layers[k], options);
 }
-baselayers['OSM'].addTo(map);
+baselayers[k].addTo(map);
 
 L.control.layers.minimap(baselayers, [], {
     position: 'bottomright',

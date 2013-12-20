@@ -7,10 +7,20 @@ function echo_step () {
     echo -e "\e[92m\e[1m$1\e[0m"
 }
 
-
 function echo_error () {
     echo -e "\e[91m\e[1m$1\e[0m"
 }
+
+
+#.......................................................................
+
+precise=$(grep "Ubuntu 12.04" /etc/issue | wc -l)
+
+if [ ! $precise -eq 1 ] ; then
+    echo_error "Unsupported operating system. Aborted."
+    exit 5
+fi
+
 
 #.......................................................................
 
@@ -31,6 +41,10 @@ apt-get dist-upgrade -y
 echo_step "Install necessary components..."
 
 apt-get install -y git curl wget libgdal1 gdal-bin mapnik-utils unzip
+
+locale-gen en_US en_US.UTF-8
+locale-gen fr_FR fr_FR.UTF-8
+dpkg-reconfigure locales
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get install -y libapache2-mod-tile
@@ -80,99 +94,55 @@ cat << _EOF_ >> /etc/postgresql/9.1/main/pg_hba.conf
 local    ${DB_NAME}     ${DB_USER}                 trust
 _EOF_
 
+echo_step "Restart service..."
 
-#.......................................................................
-
-echo_step "Load world boundaries data..."
-
-OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries/
-
-# Copy ne_10m_populated_places to ne_10m_populated_places_fixed
-rm -rf $OSM_DATA/ne_10m_populated_places_fixed.*
-ogr2ogr $OSM_DATA/ne_10m_populated_places_fixed.shp $OSM_DATA/ne_10m_populated_places.shp
-
-zipfile=/tmp/simplified-land-polygons-complete-3857.zip
-curl -L -o "$zipfile" "http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip"
-unzip -qqu $zipfile simplified-land-polygons-complete-3857/simplified_land_polygons.{shp,shx,prj,dbf,cpg} -d /tmp
-rm $zipfile
-mv /tmp/simplified-land-polygons-complete-3857/simplified_land_polygons.* $OSM_DATA/
-
-zipfile=/tmp/land-polygons-split-3857.zip
-curl -L -o "$zipfile" "http://data.openstreetmapdata.com/land-polygons-split-3857.zip"
-unzip -qqu $zipfile -d /tmp
-rm $zipfile
-mv /tmp/land-polygons-split-3857/land_polygons.* $OSM_DATA/
-
-zipfile=/tmp/coastline-good.zip
-curl -L -o "$zipfile" "http://tilemill-data.s3.amazonaws.com/osm/coastline-good.zip"
-unzip -qqu $zipfile -d /tmp
-rm $zipfile
-mv /tmp/coastline-good.* $OSM_DATA/
-
-zipfile=/tmp/10m-land.zip
-curl -L -o "$zipfile" "http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-land.zip"
-unzip -qqu $zipfile -d /tmp
-rm $zipfile
-mv /tmp/10m-land.* $OSM_DATA/
-
-shapeindex --shape_files \
-$OSM_DATA/simplified_land_polygons.shp \
-$OSM_DATA/land_polygons.shp \
-$OSM_DATA/coastline-good.shp \
-$OSM_DATA/10m-land.shp \
-$OSM_DATA/shoreline_300.shp \
-$OSM_DATA/ne_10m_populated_places_fixed.shp
+/etc/init.d/postgresql restart
 
 
 #.......................................................................
 
-echo_step "Load OpenStreetMap data..."
+if [ ! -f $OSM_DATA/10m-land.shp ]; then
+    echo_step "Load world boundaries data..."
 
-./update.sh
+    OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries/
 
-croncmd="`pwd`/update.sh 2> /var/log/openstreetmap-errors"
-cronjob="0 2 1 * * $croncmd"
-( crontab -u root -l 2> /dev/null | grep -v "$croncmd" ; echo "$cronjob" ) | crontab -u root -
+    # Copy ne_10m_populated_places to ne_10m_populated_places_fixed
+    rm -rf $OSM_DATA/ne_10m_populated_places_fixed.*
+    ogr2ogr $OSM_DATA/ne_10m_populated_places_fixed.shp $OSM_DATA/ne_10m_populated_places.shp
 
-/usr/bin/install-postgis-osm-user.sh ${DB_NAME} www-data
-/usr/bin/install-postgis-osm-user.sh ${DB_NAME} gisuser
+    zipfile=/tmp/simplified-land-polygons-complete-3857.zip
+    curl -L -o "$zipfile" "http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip"
+    unzip -qqu $zipfile simplified-land-polygons-complete-3857/simplified_land_polygons.{shp,shx,prj,dbf,cpg} -d /tmp
+    rm $zipfile
+    mv /tmp/simplified-land-polygons-complete-3857/simplified_land_polygons.* $OSM_DATA/
 
 
-#.......................................................................
+    zipfile=/tmp/land-polygons-split-3857.zip
+    curl -L -o "$zipfile" "http://data.openstreetmapdata.com/land-polygons-split-3857.zip"
+    unzip -qqu $zipfile -d /tmp
+    rm $zipfile
+    mv /tmp/land-polygons-split-3857/land_polygons.* $OSM_DATA/
 
-echo_step "Configure map styles..."
+    zipfile=/tmp/coastline-good.zip
+    curl -L -o "$zipfile" "http://tilemill-data.s3.amazonaws.com/osm/coastline-good.zip"
+    unzip -qqu $zipfile -d /tmp
+    rm $zipfile
+    mv /tmp/coastline-good.* $OSM_DATA/
 
-mkdir -p /etc/mapnik-osm-data/makina
-cp -R styles/* /etc/mapnik-osm-data/makina
+    zipfile=/tmp/10m-land.zip
+    curl -L -o "$zipfile" "http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-land.zip"
+    unzip -qqu $zipfile -d /tmp
+    rm $zipfile
+    mv /tmp/10m-land.* $OSM_DATA/
 
-# TODO : install fonts
-
-cat << _EOF_ > /etc/renderd.conf
-[renderd]
-stats_file=/var/run/renderd/renderd.stats
-socketname=/var/run/renderd/renderd.sock
-num_threads=4
-
-[mapnik]
-plugins_dir=/usr/lib/mapnik/2.0/input
-font_dir=/usr/share/fonts/truetype/ttf-dejavu
-font_dir_recurse=false
-
-[osm]
-URI=/osm/
-XML=/etc/mapnik-osm-data/osm.xml
-DESCRIPTION=OSM
-
-[grayscale]
-URI=/grayscale/
-XML=/etc/mapnik-osm-data/makina/grayscale/grayscale.xml
-DESCRIPTION=Grayscale
-
-[osmbright]
-URI=/osmbright/
-XML=/etc/mapnik-osm-data/makina/osmbright/osmbright.xml
-DESCRIPTION=Bright
-_EOF_
+    shapeindex --shape_files \
+    $OSM_DATA/simplified_land_polygons.shp \
+    $OSM_DATA/land_polygons.shp \
+    $OSM_DATA/coastline-good.shp \
+    $OSM_DATA/10m-land.shp \
+    $OSM_DATA/shoreline_300.shp \
+    $OSM_DATA/ne_10m_populated_places_fixed.shp
+fi
 
 
 #.......................................................................
@@ -182,29 +152,28 @@ echo_step "Deploy preview map..."
 rm /var/www/index.html
 cp -R preview/* /var/www/
 
-cat << _EOF_ > /var/www/conf.js
-var SETTINGS = {
-    extent: [${EXTENT}],
-    layers: {
-        'OSM': '/osm/{z}/{x}/{y}.png',
-        'Grayscale': '/grayscale/{z}/{x}/{y}.png',
-        'OSM Bright': '/osmbright/{z}/{x}/{y}.png'
-    }
-};
 
-_EOF_
+#.......................................................................
+
+echo_step "Setup monthly update..."
+
+croncmd="`pwd`/update-data.sh 2> /var/log/openstreetmap-errors"
+cronjob="0 2 1 * * $croncmd"
+( crontab -u root -l 2> /dev/null | grep -v "$croncmd" ; echo "$cronjob" ) | crontab -u root -
 
 
 #.......................................................................
 
-echo_step "Restart services..."
+./update-data.sh
 
-/etc/init.d/postgresql restart
-/etc/init.d/apache2 restart
-/etc/init.d/renderd restart
-
+# Grant rights on OSM tables
+/usr/bin/install-postgis-osm-user.sh ${DB_NAME} www-data
+/usr/bin/install-postgis-osm-user.sh ${DB_NAME} gisuser
 
 #.......................................................................
 
-echo_step "Done."
+./update-conf.sh
 
+#.......................................................................
+
+echo_step "Install done."

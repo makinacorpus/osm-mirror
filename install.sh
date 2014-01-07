@@ -101,10 +101,11 @@ echo_step "Restart service..."
 
 #.......................................................................
 
+OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries
+
 if [ ! -f $OSM_DATA/10m-land.shp ]; then
     echo_step "Load world boundaries data..."
 
-    OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries/
 
     # Copy ne_10m_populated_places to ne_10m_populated_places_fixed
     rm -rf $OSM_DATA/ne_10m_populated_places_fixed.*

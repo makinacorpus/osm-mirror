@@ -31,7 +31,7 @@ Just run the following commands :
 
     curl https://raw.github.com/makinacorpus/osm-mirror/master/install.sh > install.sh
     chmod +x install.sh
-    sudo ./install.sh
+    sudo ./install.sh 2>&1 | tee install.log
 
 **That's it !** Access your server URL.
 

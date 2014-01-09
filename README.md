@@ -96,11 +96,16 @@ Refresh the data on the new extent :
 Generate GeoTiff rasters
 ------------------------
 
-**TODO**
-
 Generate a raster file on the extent at the specified scale :
 
-    # ./render-raster.sh --extent xmin,xmax,ymin,ymax --scale 20000
+    ./render-raster.sh osm osm-25000
+
+Will render the style ``osm`` into ``osm-25000.tif``, on the extent stored
+in configuration file at the default scale (*1:25000*).
+
+Extent and scale can be specified as options :
+
+    ./render-raster.sh osm osm-7000 --scale=7000 --extent=-180 90 180 -90
 
 
 Add new style from TileMill

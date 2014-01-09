@@ -41,10 +41,12 @@ def main():
 
     render_to_file(map, output, extension)
 
-    opts = ' -ot Byte -co COMPRESS=JPEG -co JPEG_QUALITY=100'
     base_cmd = 'gdal_translate %s %s -a_srs "%s" %s'
-    cmd = base_cmd % (output, output_tif, SRS, opts)
+    georeference = '-a_ullr %s %s %s %s' % (bbox.minx, bbox.maxy,
+                                            bbox.maxx, bbox.miny)
+    cmd = base_cmd % (output, output_tif, SRS, georeference)
     os.system(cmd)
+    logger.info("GeoTIFF '%s' created." % output_tif)
 
 
 if __name__ == '__main__':

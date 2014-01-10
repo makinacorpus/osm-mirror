@@ -51,11 +51,11 @@ parser.add_option('-p', '--projection', dest='projection',
 
 
 style = args[0]
-output = args[1]
+output = '%s.png' % args[1]
 
 stylefile = os.path.join('styles', style, '%s.xml' % style)
 extension = 'png'
-output_tif = '%s.tif' % output
+output_tif = output.replace('.png', '.tif')
 pixels_per_m = 100.0 / 0.028  # 1 pixel = 0.28mm
 
 logger = logging.getLogger(__name__)
@@ -100,10 +100,11 @@ def main():
 
     render_to_file(map, output, extension)
 
-    base_cmd = 'gdal_translate %s %s -a_srs "%s" %s'
+    base_cmd = 'gdal_translate %s %s -a_srs "%s" %s %s'
     georeference = '-a_ullr %s %s %s %s' % (bbox.minx, bbox.maxy,
                                             bbox.maxx, bbox.miny)
-    cmd = base_cmd % (output, output_tif, SRS, georeference)
+    opts = '-co "TFW=YES" -co compress=LZW'
+    cmd = base_cmd % (output, output_tif, srs, georeference, opts)
     os.system(cmd)
     logger.info("GeoTIFF '%s' created with projection EPSG:%s." % (output_tif, options.projection))
 

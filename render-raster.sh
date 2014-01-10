@@ -4,6 +4,7 @@ import math
 import re
 import logging
 import optparse
+import urllib
 
 try:
     from mapnik import *
@@ -41,12 +42,17 @@ parser.add_option('-s', '--scale', dest='scale',
                   type='int',
                   default=25000,
                   action='store')
+parser.add_option('-p', '--projection', dest='projection',
+                  help='Projection SRID',
+                  type='int',
+                  default=2154,
+                  action='store')
 (options, args) = parser.parse_args()
+
 
 style = args[0]
 output = args[1]
 
-SRS = "+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 stylefile = os.path.join('styles', style, '%s.xml' % style)
 extension = 'png'
 output_tif = '%s.tif' % output
@@ -56,9 +62,20 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="\033[92m%(message)s\033[0m")
 
 
+def get_spatial_reference(code):
+    if code == 2154:
+        return "+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+    url = 'http://spatialreference.org/ref/epsg/%s/proj4/' % code
+    logger.info('Download spatial reference for %s' % code)
+    resp = urllib.urlopen(url).read()
+    return resp
+
+
 def main():
+    global options
     wgs84 = Projection('+proj=latlong +datum=WGS84')
-    projection = Projection(SRS)
+    srs = get_spatial_reference(options.projection)
+    projection = Projection(srs)
     env = ProjTransform(wgs84, projection)
     bbox = env.forward(Box2d(*options.extent))
 
@@ -69,7 +86,7 @@ def main():
 
     map = Map(width_pix, height_pix)
     load_map(map, stylefile)
-    map.srs = SRS
+    map.srs = srs
     map.zoom_to_box(bbox)
 
     logger.info('Extent size: %sm x %sm' % (bbox.width(), bbox.height()))
@@ -88,7 +105,7 @@ def main():
                                             bbox.maxx, bbox.miny)
     cmd = base_cmd % (output, output_tif, SRS, georeference)
     os.system(cmd)
-    logger.info("GeoTIFF '%s' created." % output_tif)
+    logger.info("GeoTIFF '%s' created with projection EPSG:%s." % (output_tif, options.projection))
 
 
 if __name__ == '__main__':

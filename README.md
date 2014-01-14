@@ -129,7 +129,7 @@ Update the configuration :
 Known limitations
 -----------------
 
-* All stylesheets and scripts use *localhost* for database
+* All stylesheets and scripts use *localhost* internally, which means that database and tiles rendering should happen on the same server.
 
 
 

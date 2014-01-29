@@ -92,6 +92,7 @@ sudo -n -u postgres -s -- psql -d ${DB_NAME} -f /usr/share/postgresql/9.1/contri
 cat << _EOF_ >> /etc/postgresql/9.1/main/pg_hba.conf
 # Automatically added by OSM installation :
 local    ${DB_NAME}     ${DB_USER}                 trust
+host     ${DB_NAME}     ${DB_USER}   127.0.0.1/32  trust
 _EOF_
 
 echo_step "Restart service..."

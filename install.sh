@@ -14,9 +14,9 @@ function echo_error () {
 
 #.......................................................................
 
-precise=$(grep "Ubuntu 12.04" /etc/issue | wc -l)
+trusty=$(grep "Ubuntu 14.04" /etc/issue | wc -l)
 
-if [ ! $precise -eq 1 ] ; then
+if [ ! $trusty -eq 1 ] ; then
     echo_error "Unsupported operating system. Aborted."
     exit 5
 fi
@@ -45,9 +45,7 @@ source $OSM_MIRROR_CONF
 echo_step "Upgrade operating system..."
 
 apt-get update > /dev/null
-apt-get install -y python-software-properties
-apt-add-repository -y ppa:git-core/ppa
-apt-add-repository -y ppa:ubuntugis/ppa
+apt-get install -y software-properties-common
 add-apt-repository -y ppa:kakrueger/openstreetmap
 apt-get update > /dev/null
 
@@ -58,7 +56,7 @@ apt-get dist-upgrade -y
 
 echo_step "Install necessary components..."
 
-apt-get install -y git curl wget libgdal1 gdal-bin mapnik-utils unzip
+apt-get install -y git curl wget libgdal1h gdal-bin mapnik-utils unzip
 
 locale-gen en_US en_US.UTF-8
 locale-gen fr_FR fr_FR.UTF-8
@@ -87,9 +85,8 @@ sudo -n -u postgres -s -- psql -c "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PA
 sudo -n -u postgres -s -- psql -c "CREATE DATABASE ${DB_NAME} OWNER ${DB_USER} ENCODING 'UTF8' TEMPLATE template0;"
 sudo -n -u postgres -s -- psql -d ${DB_NAME} -c "CREATE EXTENSION postgis;"
 sudo -n -u postgres -s -- psql -d ${DB_NAME} -c "GRANT ALL ON spatial_ref_sys, geometry_columns, raster_columns TO ${DB_USER};"
-sudo -n -u postgres -s -- psql -d ${DB_NAME} -f /usr/share/postgresql/9.1/contrib/postgis-2.0/legacy.sql
 
-cat << _EOF_ >> /etc/postgresql/9.1/main/pg_hba.conf
+cat << _EOF_ >> /etc/postgresql/9.3/main/pg_hba.conf
 # Automatically added by OSM installation :
 local    ${DB_NAME}     ${DB_USER}                 trust
 host     ${DB_NAME}     ${DB_USER}   127.0.0.1/32  trust
@@ -102,7 +99,7 @@ echo_step "Restart service..."
 
 #.......................................................................
 
-OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries
+OSM_DATA=/usr/share/mapnik-osm-carto-data/world_boundaries
 
 if [ ! -f $OSM_DATA/10m-land.shp ]; then
     echo_step "Load world boundaries data..."

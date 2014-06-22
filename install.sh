@@ -70,7 +70,7 @@ apt-get install -y libapache2-mod-tile
 
 if [ ! -f README.md ]; then
    echo_step "Downloading installer source..."
-   git clone --recursive --depth=50 --branch=master https://github.com/makinacorpus/osm-mirror.git /tmp/osm-mirror
+   git clone --recursive --depth=50 --branch=trusty https://github.com/makinacorpus/osm-mirror.git /tmp/osm-mirror
    rm -f /tmp/osm-mirror/install.sh
    shopt -s dotglob nullglob
    cp -R /tmp/osm-mirror/* .

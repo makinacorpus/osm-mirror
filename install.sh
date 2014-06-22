@@ -103,6 +103,7 @@ OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries
 
 if [ ! -f $OSM_DATA/10m-land.shp ]; then
     echo_step "Load world boundaries data..."
+    mkdir -p $OSM_DATA
 
 
     # Copy ne_10m_populated_places to ne_10m_populated_places_fixed

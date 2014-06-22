@@ -54,6 +54,7 @@ for style in `ls ./styles/`; do
 URI=/$style/
 XML=$STYLES_PATH/$style/$style.xml
 DESCRIPTION=$style
+MAXZOOM=20
 
 _EOF_
 done;

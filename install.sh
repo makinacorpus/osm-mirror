@@ -105,11 +105,13 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     echo_step "Load world boundaries data..."
     mkdir -p $OSM_DATA
 
-
-    # Copy ne_10m_populated_places to ne_10m_populated_places_fixed
-    rm -rf $OSM_DATA/ne_10m_populated_places_fixed.*
+    zipfile=/tmp/ne_10m_populated_places.zip
+    curl -L -o "$zipfile" "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_populated_places.zip"
+    unzip -qqu $zipfile -d /tmp
+    rm $zipfile
+    mv /tmp/ne_10m_populated_places.* $OSM_DATA/
     ogr2ogr $OSM_DATA/ne_10m_populated_places_fixed.shp $OSM_DATA/ne_10m_populated_places.shp
-
+    
     zipfile=/tmp/simplified-land-polygons-complete-3857.zip
     curl -L -o "$zipfile" "http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip"
     unzip -qqu $zipfile simplified-land-polygons-complete-3857/simplified_land_polygons.{shp,shx,prj,dbf,cpg} -d /tmp

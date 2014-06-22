@@ -137,9 +137,22 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     
     tarfile=/tmp/shoreline_300.tar.bz2
     curl -L -o "$tarfile" "http://tile.openstreetmap.org/shoreline_300.tar.bz2"
-    tar -xf /tmp/shoreline_300.tar.bz2 -C /tmp
+    tar -xf $tarfile -C /tmp
     rm $tarfile
     mv /tmp/shoreline_300.* $OSM_DATA/
+    
+    tarfile=/tmp/world_boundaries-spherical.tgz
+    curl -L -o "$tarfile" "http://planet.openstreetmap.org/historical-shapefiles/world_boundaries-spherical.tgz"
+    tar -xf $tarfile -C /tmp
+    rm $tarfile
+    mv /tmp/world_boundaries/builtup_area.* $OSM_DATA/
+
+    zipfile=/tmp/ne_110m_admin_0_boundary_lines_land.zip
+    curl -L -o "$zipfile" "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_boundary_lines_land.zip"
+    unzip -qqu $zipfile -d /tmp
+    rm $zipfile
+    mv /tmp/ne_110m_admin_0_boundary_lines_land.* $OSM_DATA/
+
     
     shapeindex --shape_files \
     $OSM_DATA/simplified_land_polygons.shp \
@@ -147,7 +160,10 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     $OSM_DATA/coastline-good.shp \
     $OSM_DATA/10m-land.shp \
     $OSM_DATA/shoreline_300.shp \
-    $OSM_DATA/ne_10m_populated_places_fixed.shp
+    $OSM_DATA/ne_10m_populated_places_fixed.shp \
+    $OSM_DATA/builtup_area.shp \
+    $OSM_DATA/ne_110m_admin_0_boundary_lines_land.shp
+    
 fi
 
 

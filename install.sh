@@ -104,7 +104,8 @@ OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries
 if [ ! -f $OSM_DATA/10m-land.shp ]; then
     echo_step "Load world boundaries data..."
     mkdir -p $OSM_DATA
-
+    
+    rm -rf $OSM_DATA/ne_10m_populated_places_fixed.*
     zipfile=/tmp/ne_10m_populated_places.zip
     curl -L -o "$zipfile" "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_populated_places.zip"
     unzip -qqu $zipfile -d /tmp

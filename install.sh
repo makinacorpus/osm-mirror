@@ -130,12 +130,6 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     unzip -qqu $zipfile -d /tmp
     rm $zipfile
     mv /tmp/coastline-good.* $OSM_DATA/
-
-    zipfile=/tmp/10m-land.zip
-    curl -L -o "$zipfile" "http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-land.zip"
-    unzip -qqu $zipfile -d /tmp
-    rm $zipfile
-    mv /tmp/10m-land.* $OSM_DATA/
     
     tarfile=/tmp/shoreline_300.tar.bz2
     curl -L -o "$tarfile" "http://tile.openstreetmap.org/shoreline_300.tar.bz2"
@@ -154,6 +148,12 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     unzip -qqu $zipfile -d /tmp
     rm $zipfile
     mv /tmp/ne_110m_admin_0_boundary_lines_land.* $OSM_DATA/
+
+    zipfile=/tmp/10m-land.zip
+    curl -L -o "$zipfile" "http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-land.zip"
+    unzip -qqu $zipfile -d /tmp
+    rm $zipfile
+    mv /tmp/10m-land.* $OSM_DATA/
 
     
     shapeindex --shape_files \

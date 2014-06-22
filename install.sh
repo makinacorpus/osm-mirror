@@ -134,7 +134,13 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     unzip -qqu $zipfile -d /tmp
     rm $zipfile
     mv /tmp/10m-land.* $OSM_DATA/
-
+    
+    tarfile=/tmp/shoreline_300.tar.bz2
+    curl -L -o "$tarfile" "http://tile.openstreetmap.org/shoreline_300.tar.bz2"
+    tar -xf /tmp/shoreline_300.tar.bz2 -C /tmp
+    rm $tarfile
+    mv /tmp/shoreline_300.* $OSM_DATA/
+    
     shapeindex --shape_files \
     $OSM_DATA/simplified_land_polygons.shp \
     $OSM_DATA/land_polygons.shp \

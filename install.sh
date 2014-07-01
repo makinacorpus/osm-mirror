@@ -99,15 +99,20 @@ echo_step "Restart service..."
 
 #.......................................................................
 
-OSM_DATA=/usr/share/mapnik-osm-carto-data/world_boundaries
+OSM_DATA=/usr/share/mapnik-osm-data/world_boundaries
 
 if [ ! -f $OSM_DATA/10m-land.shp ]; then
     echo_step "Load world boundaries data..."
-
-    # Copy ne_10m_populated_places to ne_10m_populated_places_fixed
+    mkdir -p $OSM_DATA
+    
     rm -rf $OSM_DATA/ne_10m_populated_places_fixed.*
+    zipfile=/tmp/ne_10m_populated_places.zip
+    curl -L -o "$zipfile" "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_populated_places.zip"
+    unzip -qqu $zipfile -d /tmp
+    rm $zipfile
+    mv /tmp/ne_10m_populated_places.* $OSM_DATA/
     ogr2ogr $OSM_DATA/ne_10m_populated_places_fixed.shp $OSM_DATA/ne_10m_populated_places.shp
-
+    
     zipfile=/tmp/simplified-land-polygons-complete-3857.zip
     curl -L -o "$zipfile" "http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip"
     unzip -qqu $zipfile simplified-land-polygons-complete-3857/simplified_land_polygons.{shp,shx,prj,dbf,cpg} -d /tmp
@@ -125,6 +130,24 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     unzip -qqu $zipfile -d /tmp
     rm $zipfile
     mv /tmp/coastline-good.* $OSM_DATA/
+    
+    tarfile=/tmp/shoreline_300.tar.bz2
+    curl -L -o "$tarfile" "http://tile.openstreetmap.org/shoreline_300.tar.bz2"
+    tar -xf $tarfile -C /tmp
+    rm $tarfile
+    mv /tmp/shoreline_300.* $OSM_DATA/
+    
+    tarfile=/tmp/world_boundaries-spherical.tgz
+    curl -L -o "$tarfile" "http://planet.openstreetmap.org/historical-shapefiles/world_boundaries-spherical.tgz"
+    tar -xf $tarfile -C /tmp
+    rm $tarfile
+    mv /tmp/world_boundaries/builtup_area.* $OSM_DATA/
+
+    zipfile=/tmp/ne_110m_admin_0_boundary_lines_land.zip
+    curl -L -o "$zipfile" "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_boundary_lines_land.zip"
+    unzip -qqu $zipfile -d /tmp
+    rm $zipfile
+    mv /tmp/ne_110m_admin_0_boundary_lines_land.* $OSM_DATA/
 
     zipfile=/tmp/10m-land.zip
     curl -L -o "$zipfile" "http://mapbox-geodata.s3.amazonaws.com/natural-earth-1.3.0/physical/10m-land.zip"
@@ -132,13 +155,17 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     rm $zipfile
     mv /tmp/10m-land.* $OSM_DATA/
 
+    
     shapeindex --shape_files \
     $OSM_DATA/simplified_land_polygons.shp \
     $OSM_DATA/land_polygons.shp \
     $OSM_DATA/coastline-good.shp \
     $OSM_DATA/10m-land.shp \
     $OSM_DATA/shoreline_300.shp \
-    $OSM_DATA/ne_10m_populated_places_fixed.shp
+    $OSM_DATA/ne_10m_populated_places_fixed.shp \
+    $OSM_DATA/builtup_area.shp \
+    $OSM_DATA/ne_110m_admin_0_boundary_lines_land.shp
+    
 fi
 
 

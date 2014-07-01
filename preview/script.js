@@ -4,7 +4,8 @@ var bounds = L.latLngBounds([SETTINGS.extent[1], SETTINGS.extent[0]],
 var map = L.map('map', {maxBounds: bounds});
 
 var options = {
-    attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+    attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+    maxZoom: 20
 };
 
 var baselayers = {};

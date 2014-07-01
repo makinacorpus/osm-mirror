@@ -3,6 +3,7 @@ OpenStreetMap Mirror
 
 Up-to-date OpenStreetMap tile server, with various map styles.
 
+For Ubuntu 14.04 Trusty Tahr
 
 Main Purpose
 ------------
@@ -21,7 +22,7 @@ Install
 
 Requirements
 
-* Ubuntu 12.04 LTS
+* Ubuntu 14.04 LTS
 * 2 CPUs
 * 2Go RAM
 * 10Go disk
@@ -29,7 +30,7 @@ Requirements
 
 Just run the following commands :
 
-    curl https://raw.github.com/makinacorpus/osm-mirror/master/install.sh > install.sh
+    curl https://raw.github.com/makinacorpus/osm-mirror/trusty/install.sh > install.sh
     chmod +x install.sh
     sudo ./install.sh 2>&1 | tee install.log
 

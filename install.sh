@@ -70,7 +70,7 @@ apt-get install -y libapache2-mod-tile
 
 if [ ! -f README.md ]; then
    echo_step "Downloading installer source..."
-   git clone --recursive --depth=50 --branch=master https://github.com/makinacorpus/osm-mirror.git /tmp/osm-mirror
+   git clone --recursive --depth=50 --branch=trusty https://github.com/makinacorpus/osm-mirror.git /tmp/osm-mirror
    rm -f /tmp/osm-mirror/install.sh
    shopt -s dotglob nullglob
    cp -R /tmp/osm-mirror/* .
@@ -104,7 +104,6 @@ OSM_DATA=/usr/share/mapnik-osm-carto-data/world_boundaries
 if [ ! -f $OSM_DATA/10m-land.shp ]; then
     echo_step "Load world boundaries data..."
 
-
     # Copy ne_10m_populated_places to ne_10m_populated_places_fixed
     rm -rf $OSM_DATA/ne_10m_populated_places_fixed.*
     ogr2ogr $OSM_DATA/ne_10m_populated_places_fixed.shp $OSM_DATA/ne_10m_populated_places.shp
@@ -114,7 +113,6 @@ if [ ! -f $OSM_DATA/10m-land.shp ]; then
     unzip -qqu $zipfile simplified-land-polygons-complete-3857/simplified_land_polygons.{shp,shx,prj,dbf,cpg} -d /tmp
     rm $zipfile
     mv /tmp/simplified-land-polygons-complete-3857/simplified_land_polygons.* $OSM_DATA/
-
 
     zipfile=/tmp/land-polygons-split-3857.zip
     curl -L -o "$zipfile" "http://data.openstreetmapdata.com/land-polygons-split-3857.zip"

@@ -30,7 +30,7 @@ Requirements
 
 Just run the following commands :
 
-    curl https://raw.github.com/makinacorpus/osm-mirror/trusty/install.sh > install.sh
+    curl https://raw.githubusercontent.com/makinacorpus/osm-mirror/trusty/install.sh > install.sh
     chmod +x install.sh
     sudo ./install.sh 2>&1 | tee install.log
 

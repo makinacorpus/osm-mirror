@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 OSM_MIRROR_CONF=/etc/default/openstreetmap-conf
 
 
@@ -14,9 +16,9 @@ function echo_error () {
 
 #.......................................................................
 
-trusty=$(grep "Ubuntu 14.04" /etc/issue | wc -l)
+jessie=$(grep "Debian GNU/Linux 8" /etc/issue | wc -l)
 
-if [ ! $trusty -eq 1 ] ; then
+if [ ! $jessie -eq 1 ] ; then
     echo_error "Unsupported operating system. Aborted."
     exit 5
 fi
@@ -45,10 +47,6 @@ source $OSM_MIRROR_CONF
 echo_step "Upgrade operating system..."
 
 apt-get update > /dev/null
-apt-get install -y software-properties-common
-add-apt-repository -y ppa:kakrueger/openstreetmap
-apt-get update > /dev/null
-
 apt-get dist-upgrade -y
 
 
@@ -56,21 +54,23 @@ apt-get dist-upgrade -y
 
 echo_step "Install necessary components..."
 
-apt-get install -y git curl wget libgdal1h gdal-bin mapnik-utils unzip
+apt-get install -y git curl wget libgdal1h gdal-bin mapnik-utils unzip \
+    apache2 postgresql-9.4 postgis dpkg-dev debhelper apache2-dev \
+    libmapnik-dev autoconf automake m4 libtool libcurl4-gnutls-dev \
+    libcairo2-dev apache2-mpm-event osm2pgsql
 
 locale-gen en_US en_US.UTF-8
 locale-gen fr_FR fr_FR.UTF-8
 dpkg-reconfigure locales
 
 export DEBIAN_FRONTEND=noninteractive
-apt-get install -y libapache2-mod-tile
 
 
 #.......................................................................
 
 if [ ! -f README.md ]; then
    echo_step "Downloading installer source..."
-   git clone --recursive --depth=50 --branch=trusty https://github.com/makinacorpus/osm-mirror.git /tmp/osm-mirror
+   git clone --recursive --depth=50 --branch=jessie https://github.com/makinacorpus/osm-mirror.git /tmp/osm-mirror
    rm -f /tmp/osm-mirror/install.sh
    shopt -s dotglob nullglob
    cp -R /tmp/osm-mirror/* .
@@ -79,14 +79,31 @@ fi
 
 #.......................................................................
 
+echo_step "Install mod_tile..."
+if [ -d mod_tile ]; then
+    cd mod_tile
+    git checkout master
+    git pull
+else
+    git clone https://github.com/makinacorpus/mod_tile
+    cd mod_tile
+fi
+dpkg-buildpackage
+cd ..
+dpkg -i renderd_0.4.1_amd64.deb
+dpkg -i libapache2-mod-tile_0.4.1_amd64.deb
+
+
+#.......................................................................
+
 echo_step "Configure database..."
 
-sudo -n -u postgres -s -- psql -c "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';"
-sudo -n -u postgres -s -- psql -c "CREATE DATABASE ${DB_NAME} OWNER ${DB_USER} ENCODING 'UTF8' TEMPLATE template0;"
-sudo -n -u postgres -s -- psql -d ${DB_NAME} -c "CREATE EXTENSION postgis;"
-sudo -n -u postgres -s -- psql -d ${DB_NAME} -c "GRANT ALL ON spatial_ref_sys, geometry_columns, raster_columns TO ${DB_USER};"
+su postgres -c "psql -c \"CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';\""
+su postgres -c "psql -c \"CREATE DATABASE ${DB_NAME} OWNER ${DB_USER} ENCODING 'UTF8' TEMPLATE template0;\""
+su postgres -c "psql -d ${DB_NAME} -c \"CREATE EXTENSION postgis;\""
+su postgres -c "psql -d ${DB_NAME} -c \"GRANT ALL ON spatial_ref_sys, geometry_columns, raster_columns TO ${DB_USER};\""
 
-cat << _EOF_ >> /etc/postgresql/9.3/main/pg_hba.conf
+cat << _EOF_ >> /etc/postgresql/9.4/main/pg_hba.conf
 # Automatically added by OSM installation :
 local    ${DB_NAME}     ${DB_USER}                 trust
 host     ${DB_NAME}     ${DB_USER}   127.0.0.1/32  trust
@@ -173,7 +190,7 @@ fi
 
 echo_step "Deploy preview map..."
 
-rm /var/www/index.html
+rm -rf /var/www/html
 cp -R preview/* /var/www/
 
 

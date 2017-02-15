@@ -18,7 +18,7 @@ if [ -f $output ]; then
     echo_step "Re-use previously downloaded data..."
 else
     echo_step "Download OpenStreetMap data..."
-    wget http://www.overpass-api.de/api/xapi?map?bbox=${EXTENT} -O ${output}
+    wget http://www.overpass-api.de/api/xapi?map?*[bbox=${EXTENT}] -O ${output}
 fi
 
 
@@ -26,7 +26,7 @@ fi
 
 echo_step "Load into database..."
 
-sudo -n -u postgres -s -- osm2pgsql -d ${DB_NAME} --extra-attributes --create ${output}
+su postgres -c "osm2pgsql -d ${DB_NAME} --extra-attributes --create ${output}"
 if [ $? -eq 0 ]; then
     rm ${output}
     echo_step "Done."

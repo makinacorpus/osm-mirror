@@ -3,7 +3,7 @@ OpenStreetMap Mirror
 
 Up-to-date OpenStreetMap tile server, with various map styles.
 
-For Ubuntu 14.04 Trusty Tahr
+For Debian/Jessie
 
 Main Purpose
 ------------
